@@ -19,6 +19,14 @@ import (
 func main() {
 	cfg := config.Load()
 
+	log.Println("Current config parameters")
+	log.Println("Logs directory: ", cfg.LogDir)
+	log.Println("Server port: ", cfg.ServerPort)
+	log.Println("Cache TTL: ", cfg.CacheTTL)
+	log.Println("Max open files: ", cfg.MaxOpenFiles)
+	log.Println("File cache TTL: ", cfg.FileCacheTTL)
+	log.Println("Rate limit: ", cfg.RateLimit)
+
 	repo, err := repository.NewLogRepository(
 		cfg.LogDir,
 		cfg.MaxOpenFiles,

@@ -1,9 +1,12 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -15,9 +18,11 @@ type Config struct {
 	RateLimit    int
 }
 
-// TODO: переписать с использованием .env
-
 func Load() *Config {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: No .env file found, using system default variables")
+	}
+
 	return &Config{
 		LogDir:       getEnv("LOG_DIR", "/tmp/log"),
 		ServerPort:   getEnv("SERVER_PORT", "8080"),
