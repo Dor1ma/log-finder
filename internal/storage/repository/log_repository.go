@@ -32,7 +32,7 @@ type LogRepository struct {
 func NewLogRepository(logDir string, maxOpenFiles int, fileCacheTTL, refreshInterval time.Duration) (*LogRepository, error) {
 	repo := &LogRepository{
 		logDir:          logDir,
-		fileCache:       newFileCache(maxOpenFiles, fileCacheTTL),
+		fileCache:       NewFileCache(maxOpenFiles, fileCacheTTL),
 		refreshInterval: refreshInterval,
 		done:            make(chan struct{}),
 	}
@@ -126,6 +126,12 @@ func (r *LogRepository) startPeriodicRefresh() {
 			}
 		}
 	}()
+}
+
+func (r *LogRepository) FileCount() int {
+	r.indexMutex.RLock()
+	defer r.indexMutex.RUnlock()
+	return len(r.fileIndex)
 }
 
 func (r *LogRepository) Close() {

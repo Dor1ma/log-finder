@@ -24,7 +24,7 @@ type cacheEntry struct {
 	element   *list.Element
 }
 
-func newFileCache(maxSize int, ttl time.Duration) *fileCache {
+func NewFileCache(maxSize int, ttl time.Duration) *fileCache {
 	return &fileCache{
 		maxSize: maxSize,
 		ttl:     ttl,
