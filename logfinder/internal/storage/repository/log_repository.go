@@ -80,7 +80,9 @@ func (r *LogRepository) FindByTimestamp(ctx context.Context, t time.Time) (strin
 	defer r.indexMutex.RUnlock()
 
 	for _, meta := range r.fileIndex {
-		if t.After(meta.start) && t.Before(meta.end) {
+		if (t.Equal(meta.start) || t.After(meta.start)) &&
+			(t.Equal(meta.end) || t.Before(meta.end)) {
+
 			data, err := r.fileCache.Get(meta.path)
 			if err != nil {
 				return "", err

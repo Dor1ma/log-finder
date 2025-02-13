@@ -3,9 +3,10 @@ package utils
 import (
 	"bufio"
 	"bytes"
-	"github.com/Dor1ma/log-finder/logfinder/internal/models"
 	"os"
 	"time"
+
+	"github.com/Dor1ma/log-finder/logfinder/internal/models"
 )
 
 var timeFormat = "2006-01-02T15:04:05.000"
@@ -19,16 +20,18 @@ func GetFileTimeBounds(path string) (time.Time, time.Time, error) {
 
 	scanner := bufio.NewScanner(file)
 
-	// Get first line
 	var firstLine string
 	if scanner.Scan() {
 		firstLine = scanner.Text()
 	}
 
-	// Get last line
 	var lastLine string
 	for scanner.Scan() {
 		lastLine = scanner.Text()
+	}
+
+	if lastLine == "" {
+		lastLine = firstLine
 	}
 
 	start, err := ParseTimestamp(firstLine)

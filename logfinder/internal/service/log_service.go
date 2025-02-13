@@ -22,18 +22,18 @@ func NewLogService(repo models.LogRepository, cacheTTL time.Duration) *LogServic
 	}
 }
 
-func (uc *LogService) FindLog(ctx context.Context, timestamp time.Time) (string, error) {
+func (service *LogService) FindLog(ctx context.Context, timestamp time.Time) (string, error) {
 	cacheKey := timestamp.Format(timeFormat)
 
-	if entry, ok := uc.cache.Get(cacheKey); ok {
+	if entry, ok := service.cache.Get(cacheKey); ok {
 		return entry, nil
 	}
 
-	result, err := uc.repo.FindByTimestamp(ctx, timestamp)
+	result, err := service.repo.FindByTimestamp(ctx, timestamp)
 	if err != nil {
 		return "", err
 	}
 
-	uc.cache.Set(cacheKey, result)
+	service.cache.Set(cacheKey, result)
 	return result, nil
 }

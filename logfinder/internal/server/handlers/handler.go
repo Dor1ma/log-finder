@@ -11,11 +11,11 @@ import (
 var timeFormat = "2006-01-02T15:04:05.000"
 
 type LogHandler struct {
-	useCase *service.LogService
+	service *service.LogService
 }
 
-func NewLogHandler(uc *service.LogService) *LogHandler {
-	return &LogHandler{useCase: uc}
+func NewLogHandler(s *service.LogService) *LogHandler {
+	return &LogHandler{service: s}
 }
 
 func (h *LogHandler) GetLogByTimestamp(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +31,7 @@ func (h *LogHandler) GetLogByTimestamp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := h.useCase.FindLog(r.Context(), timestamp)
+	result, err := h.service.FindLog(r.Context(), timestamp)
 	if err != nil {
 		if err == service.ErrNotFound {
 			http.Error(w, "log entry not found", http.StatusNotFound)
