@@ -10,12 +10,13 @@ import (
 )
 
 type Config struct {
-	LogDir       string
-	ServerPort   string
-	CacheTTL     time.Duration
-	MaxOpenFiles int
-	FileCacheTTL time.Duration
-	RateLimit    int
+	LogDir          string
+	ServerPort      string
+	CacheTTL        time.Duration
+	MaxOpenFiles    int
+	FileCacheTTL    time.Duration
+	RateLimit       int
+	RefreshInterval time.Duration
 }
 
 func Load() *Config {
@@ -24,12 +25,13 @@ func Load() *Config {
 	}
 
 	return &Config{
-		LogDir:       getEnv("LOG_DIR", "/tmp/log"),
-		ServerPort:   getEnv("SERVER_PORT", "8080"),
-		CacheTTL:     getEnvAsDuration("CACHE_TTL", 5*time.Minute),
-		MaxOpenFiles: getEnvAsInt("MAX_OPEN_FILES", 20),
-		FileCacheTTL: getEnvAsDuration("FILE_CACHE_TTL", 10*time.Minute),
-		RateLimit:    getEnvAsInt("RATE_LIMIT", 100),
+		LogDir:          getEnv("LOG_DIR", "/tmp/log"),
+		ServerPort:      getEnv("SERVER_PORT", "8080"),
+		CacheTTL:        getEnvAsDuration("CACHE_TTL", 5*time.Minute),
+		MaxOpenFiles:    getEnvAsInt("MAX_OPEN_FILES", 20),
+		FileCacheTTL:    getEnvAsDuration("FILE_CACHE_TTL", 10*time.Minute),
+		RateLimit:       getEnvAsInt("RATE_LIMIT", 100),
+		RefreshInterval: getEnvAsDuration("REFRESH_INERVAL", 60*time.Minute),
 	}
 }
 

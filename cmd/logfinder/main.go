@@ -26,11 +26,13 @@ func main() {
 	log.Println("Max open files: ", cfg.MaxOpenFiles)
 	log.Println("File cache TTL: ", cfg.FileCacheTTL)
 	log.Println("Rate limit: ", cfg.RateLimit)
+	log.Println("Refresh interval: ", cfg.RefreshInterval)
 
 	repo, err := repository.NewLogRepository(
 		cfg.LogDir,
 		cfg.MaxOpenFiles,
 		cfg.FileCacheTTL,
+		cfg.RefreshInterval,
 	)
 
 	if err != nil {

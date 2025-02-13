@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -19,23 +20,28 @@ type logFileMetadata struct {
 }
 
 type LogRepository struct {
-	logDir     string
-	fileIndex  []logFileMetadata
-	indexMutex sync.RWMutex
-	fileCache  *fileCache
+	logDir          string
+	fileIndex       []logFileMetadata
+	indexMutex      sync.RWMutex
+	fileCache       *fileCache
+	refreshInterval time.Duration
+	done            chan struct{}
+	wg              sync.WaitGroup
 }
 
-func NewLogRepository(logDir string, maxOpenFiles int, fileCacheTTL time.Duration) (*LogRepository, error) {
+func NewLogRepository(logDir string, maxOpenFiles int, fileCacheTTL, refreshInterval time.Duration) (*LogRepository, error) {
 	repo := &LogRepository{
-		logDir:    logDir,
-		fileCache: newFileCache(maxOpenFiles, fileCacheTTL),
+		logDir:          logDir,
+		fileCache:       newFileCache(maxOpenFiles, fileCacheTTL),
+		refreshInterval: refreshInterval,
+		done:            make(chan struct{}),
 	}
-	err := repo.RefreshMetadata()
 
-	if err != nil {
+	if err := repo.RefreshMetadata(); err != nil {
 		return nil, err
 	}
 
+	repo.startPeriodicRefresh()
 	return repo, nil
 }
 
@@ -57,6 +63,7 @@ func (r *LogRepository) RefreshMetadata() error {
 		path := filepath.Join(r.logDir, f.Name())
 		start, end, err := utils.GetFileTimeBounds(path)
 		if err != nil {
+			log.Printf("Skipping file %s: %v", path, err)
 			continue
 		}
 
@@ -72,6 +79,7 @@ func (r *LogRepository) RefreshMetadata() error {
 	})
 
 	r.fileIndex = newIndex
+	log.Printf("Metadata refreshed. Files in index: %d", len(r.fileIndex))
 	return nil
 }
 
@@ -90,7 +98,7 @@ func (r *LogRepository) FindByTimestamp(ctx context.Context, t time.Time) (strin
 
 			result, err := utils.BinarySearchInData(data, t)
 			if err != nil {
-				return "", err
+				return "", models.ErrNotFound
 			}
 
 			return result, nil
@@ -98,4 +106,43 @@ func (r *LogRepository) FindByTimestamp(ctx context.Context, t time.Time) (strin
 	}
 
 	return "", models.ErrNotFound
+}
+
+func (r *LogRepository) startPeriodicRefresh() {
+	r.wg.Add(1)
+	go func() {
+		defer r.wg.Done()
+		ticker := time.NewTicker(r.refreshInterval)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				if err := r.RefreshMetadata(); err != nil {
+					log.Printf("Metadata refresh error: %v", err)
+				}
+			case <-r.done:
+				return
+			}
+		}
+	}()
+}
+
+func (r *LogRepository) Close() {
+	close(r.done)
+	r.wg.Wait()
+	r.fileCache.Clear()
+}
+
+func (c *fileCache) Clear() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	for k, entry := range c.cache {
+		delete(c.cache, k)
+		c.lruList.Remove(entry.element)
+	}
+
+	c.cache = make(map[string]*cacheEntry)
+	c.lruList.Init()
 }
