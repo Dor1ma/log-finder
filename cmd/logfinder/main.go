@@ -39,8 +39,8 @@ func main() {
 		log.Fatalf("Error occured during repo creating: %v", err)
 	}
 
-	useCase := service.NewLogService(repo, cfg.CacheTTL)
-	handler := handlers.NewLogHandler(useCase)
+	service := service.NewLogService(repo, cfg.CacheTTL)
+	handler := handlers.NewLogHandler(service)
 
 	server := &http.Server{
 		Addr:    ":" + cfg.ServerPort,
