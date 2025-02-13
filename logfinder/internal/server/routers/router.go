@@ -1,9 +1,10 @@
 package routers
 
 import (
-	"github.com/Dor1ma/log-finder/logfinder/internal/http/handlers"
-	"github.com/Dor1ma/log-finder/logfinder/internal/http/middleware"
 	"net/http"
+
+	"github.com/Dor1ma/log-finder/logfinder/internal/server/handlers"
+	"github.com/Dor1ma/log-finder/logfinder/internal/server/middleware"
 
 	"github.com/gorilla/mux"
 )

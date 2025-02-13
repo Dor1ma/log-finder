@@ -2,13 +2,14 @@ package repository
 
 import (
 	"context"
-	"github.com/Dor1ma/log-finder/logfinder/internal/models"
-	"github.com/Dor1ma/log-finder/logfinder/pkg/utils"
 	"os"
 	"path/filepath"
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/Dor1ma/log-finder/logfinder/internal/models"
+	"github.com/Dor1ma/log-finder/logfinder/pkg/utils"
 )
 
 type logFileMetadata struct {
@@ -24,13 +25,18 @@ type LogRepository struct {
 	fileCache  *fileCache
 }
 
-func NewLogRepository(logDir string, maxOpenFiles int, fileCacheTTL time.Duration) *LogRepository {
+func NewLogRepository(logDir string, maxOpenFiles int, fileCacheTTL time.Duration) (*LogRepository, error) {
 	repo := &LogRepository{
 		logDir:    logDir,
 		fileCache: newFileCache(maxOpenFiles, fileCacheTTL),
 	}
-	repo.RefreshMetadata()
-	return repo
+	err := repo.RefreshMetadata()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return repo, nil
 }
 
 func (r *LogRepository) RefreshMetadata() error {

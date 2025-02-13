@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/Dor1ma/log-finder/logfinder/internal/service"
 	"net/http"
 	"time"
+
+	"github.com/Dor1ma/log-finder/logfinder/internal/service"
 )
+
+var timeFormat = "2006-01-02T15:04:05.000"
 
 type LogHandler struct {
 	useCase *service.LogService
@@ -22,7 +25,7 @@ func (h *LogHandler) GetLogByTimestamp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timestamp, err := time.Parse(time.RFC3339Nano, timestampParam)
+	timestamp, err := time.Parse(timeFormat, timestampParam)
 	if err != nil {
 		http.Error(w, "invalid timestamp format", http.StatusBadRequest)
 		return

@@ -19,7 +19,7 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		LogDir:       getEnv("LOG_DIR", "/var/log/app"),
+		LogDir:       getEnv("LOG_DIR", "/tmp/log"),
 		ServerPort:   getEnv("SERVER_PORT", "8080"),
 		CacheTTL:     getEnvAsDuration("CACHE_TTL", 5*time.Minute),
 		MaxOpenFiles: getEnvAsInt("MAX_OPEN_FILES", 20),
