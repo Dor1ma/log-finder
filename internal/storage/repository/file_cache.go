@@ -2,10 +2,11 @@ package repository
 
 import (
 	"container/list"
-	"github.com/Dor1ma/log-finder/logfinder/pkg/mmap"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/Dor1ma/log-finder/pkg/mmap"
 )
 
 type fileCache struct {

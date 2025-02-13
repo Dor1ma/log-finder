@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/Dor1ma/log-finder/logfinder/internal/models"
+	"github.com/Dor1ma/log-finder/internal/models"
 )
 
 var timeFormat = "2006-01-02T15:04:05.000"

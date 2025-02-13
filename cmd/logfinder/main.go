@@ -9,11 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Dor1ma/log-finder/logfinder/internal/config"
-	"github.com/Dor1ma/log-finder/logfinder/internal/server/handlers"
-	"github.com/Dor1ma/log-finder/logfinder/internal/server/routers"
-	"github.com/Dor1ma/log-finder/logfinder/internal/service"
-	"github.com/Dor1ma/log-finder/logfinder/internal/storage/repository"
+	"github.com/Dor1ma/log-finder/internal/config"
+	"github.com/Dor1ma/log-finder/internal/server/handlers"
+	"github.com/Dor1ma/log-finder/internal/server/routers"
+	"github.com/Dor1ma/log-finder/internal/service"
+	"github.com/Dor1ma/log-finder/internal/storage/repository"
 )
 
 func main() {

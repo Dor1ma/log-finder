@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Dor1ma/log-finder/logfinder/internal/models"
-	"github.com/Dor1ma/log-finder/logfinder/pkg/utils"
+	"github.com/Dor1ma/log-finder/internal/models"
+	"github.com/Dor1ma/log-finder/pkg/utils"
 )
 
 type logFileMetadata struct {

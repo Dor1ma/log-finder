@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Dor1ma/log-finder/logfinder/internal/service"
+	"github.com/Dor1ma/log-finder/internal/service"
 )
 
 var timeFormat = "2006-01-02T15:04:05.000"

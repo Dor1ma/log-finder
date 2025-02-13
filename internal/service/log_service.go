@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Dor1ma/log-finder/logfinder/internal/models"
+	"github.com/Dor1ma/log-finder/internal/models"
 )
 
 var ErrNotFound = models.ErrNotFound
